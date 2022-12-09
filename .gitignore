@@ -3,3 +3,4 @@ stuff/*
 *.zip
 *.txt
 Training.csv
+.ipynb_checkpoints/spam detection-checkpoint.ipynb
