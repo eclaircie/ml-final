@@ -6,6 +6,7 @@ import csv
 import numpy as np
 
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 
 def normalize(example):
@@ -36,6 +37,9 @@ def process_text(filename):
     # read 4th col of file (data) + 5th col (label)
     strings =[]
     labels = []
+    global X_train, X_test, y_train, y_test
+
+
     
     with open (filename,'r', encoding="utf-8") as csvfile:
         csvdata = csv.reader(csvfile)
@@ -47,7 +51,10 @@ def process_text(filename):
     strings_norm = []
     for example in strings :
         strings_norm.append(normalize(example))
-    
+
+    X_train, X_test, y_train, y_test = train_test_split(strings,labels,test_size=0.1)
+
+
     return np.column_stack((strings_norm,labels))
     
 
@@ -124,14 +131,19 @@ def create_dict(arr, dict_size=500):
     print(np.shape(all_spam_words))
     print(np.shape(counts))
     #dic = counts[:dict_size], #grab first (size) words from counts
-    return
+    #return dic
+    return np.array([all_spam_words, counts])
     
 
 
 def main():
     training_set = process_text('Training.csv')
+
+
     dictionary = create_dict(training_set, 150) #150 words
 
+    model = MultinomialNB()
+    model.fit(dictionary, y_train)
     #make feature vectors for each comment, store in list, dictsize x no. of features
 
 
