@@ -88,7 +88,7 @@ def create_dict(arr, dict_size=500):
     #print (spam_as_str)
         
     #initialize counts as all unique spam words + all zeros
-    counts = np.zeros(len(all_spam_words), dtype=np.int8)
+    counts = np.zeros(len(all_spam_words), )
     #counts = np.column_stack((all_spam_words, zer)) #dont need this???
     #print (all_spam_words,counts)
     
@@ -111,12 +111,20 @@ def create_dict(arr, dict_size=500):
         #print (counts[pos])
         current_counts = counts[pos]
         counts[pos] = current_counts + 1
-    
-    print (counts)
+
+    # DEBUG ------------------
+    #print(spam_as_str)
+    print(np.shape(all_spam_words))
+    for i in range (0,len(all_spam_words)):
+        print (all_spam_words[i], counts[i])
+
+    #for thing in spammy_words:
+    #    print (thing)
+
     print(np.shape(all_spam_words))
     print(np.shape(counts))
-    dic = counts[:dict_size], #grab first (size) words from counts
-    return dic
+    #dic = counts[:dict_size], #grab first (size) words from counts
+    return
     
 
 
