@@ -4,3 +4,4 @@ stuff/*
 *.txt
 Training.csv
 .ipynb_checkpoints/spam detection-checkpoint.ipynb
+Validation.csv
