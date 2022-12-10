@@ -9,12 +9,13 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 
+
 def normalize(example):
     # make everything lowercase 
     example = example.lower()
     
     # strip html tags, replace with ""
-    example = re.sub('\<\w{1,2}\>',
+    example = re.sub('<\w{1,2}>',
                      '', example)
     
     # remove punctuation; 
@@ -22,8 +23,8 @@ def normalize(example):
     example = re.sub('\W', ' ', example)
     
     # remove links, replace with keyword " _EXTERNALLINK "
-    example = re.sub('(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-]*)',
-                     ' EXTERNALLINK ', example)
+    example = re.sub('(https?://)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)',
+                     ' _EXTERNALLINK ', example)
 
     # replace all excessive whitespace with a single space; 
     #(this will also normalize the punctuation & link counters above)
@@ -50,7 +51,7 @@ def process_text(filename):
     for example in strings :
         strings_norm.append(normalize(example))
 
-    X_train, X_test, y_train, y_test = train_test_split(strings_norm,labels,test_size=0.001)
+    X_train, X_test, y_train, y_test = train_test_split(strings_norm,labels,test_size=0.15)
 
 
     return np.column_stack((strings_norm,labels))
@@ -133,20 +134,24 @@ def create_dict(arr, dict_size=500):
     return np.array([all_spam_words, counts])
     
 
+def analyze():
+    return
 
 def main():
     training_set = process_text('Training.csv')
 
     cv = CountVectorizer()
     X_train_count = cv.fit_transform(X_train)
-    print(X_train_count.toarray())
-
-    print(X_test)
     X_test_count = cv.transform(X_test)
 
     model = MultinomialNB()
     model.fit(X_train_count,y_train)
-    print(model.predict(X_test_count))
+    prediction = model.predict(X_test_count)
+    accuracy = model.score(X_test_count,y_test)
+
+    print('TEST DATA:', X_test)
+    print('PREDICTION:', prediction)
+    print('ACCURACY:', accuracy)
 
 
 
