@@ -38,8 +38,6 @@ def process_text(filename):
     strings =[]
     labels = []
     global X_train, X_test, y_train, y_test
-
-
     
     with open (filename,'r', encoding="utf-8") as csvfile:
         csvdata = csv.reader(csvfile)
@@ -52,7 +50,7 @@ def process_text(filename):
     for example in strings :
         strings_norm.append(normalize(example))
 
-    X_train, X_test, y_train, y_test = train_test_split(strings,labels,test_size=0.1)
+    X_train, X_test, y_train, y_test = train_test_split(strings_norm,labels,test_size=0.001)
 
 
     return np.column_stack((strings_norm,labels))
@@ -139,12 +137,16 @@ def create_dict(arr, dict_size=500):
 def main():
     training_set = process_text('Training.csv')
 
+    cv = CountVectorizer()
+    X_train_count = cv.fit_transform(X_train)
+    print(X_train_count.toarray())
 
-    dictionary = create_dict(training_set, 150) #150 words
+    print(X_test)
+    X_test_count = cv.transform(X_test)
 
     model = MultinomialNB()
-    model.fit(dictionary, y_train)
-    #make feature vectors for each comment, store in list, dictsize x no. of features
+    model.fit(X_train_count,y_train)
+    print(model.predict(X_test_count))
 
 
 
