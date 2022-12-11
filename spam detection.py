@@ -62,7 +62,9 @@ def analyze_multi():
 def analyze_gauss():
     cv = CountVectorizer()
     X_train_count = cv.fit_transform(X_train)
+    X_train_count = X_train_count.toarray()
     X_test_count = cv.transform(X_test)
+    X_test_count = X_test_count.toarray()
 
     model_g = GaussianNB()
     model_g.fit(X_train_count, y_train)
@@ -75,22 +77,21 @@ def analyze_gauss():
 
 def main():
     process_text('Training.csv')
-
     prediction_nb, accuracy_nb = analyze_multi()
-    prediction_g, accuracy_g = analyze_gauss()
+    #prediction_g, accuracy_g = analyze_gauss()
 
-    print('Test data: ')
-    for item in X_test:
-        print (item)
-
-    print('MULTINOMIAL NAIVE BAYES')
-    print('\nPrediction:', prediction_nb)
+    print('\n\n\nMULTINOMIAL NAIVE BAYES')
+    print('\nTest data + prediction: ')
+    for i in range (len(X_test)):
+        print(X_test[i], "| ", prediction_nb[i])
+        
     print('\nAccuracy:', accuracy_nb)
 
+'''
     print('\n\n\nGAUSSIAN NAIVE BAYES')
     print('\nPrediction:', prediction_g)
     print('\nAccuracy:', accuracy_g)
-
+'''
 
 if __name__=="__main__":
     main()
