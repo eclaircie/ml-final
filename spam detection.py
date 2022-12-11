@@ -3,11 +3,10 @@
 
 import re
 import csv
-import numpy as np
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, GaussianNB
 
 
 def normalize(example):
@@ -42,29 +41,55 @@ def process_text(filename):
     for example in strings :
         strings_norm.append(normalize(example))
 
-    X_train, X_test, y_train, y_test = train_test_split(strings_norm,labels,test_size=0.15)
+    X_train, X_test, y_train, y_test = train_test_split(strings_norm,labels,test_size=0.10)
 
 
-    return np.column_stack((strings_norm,labels))
-    
 
-
-def main():
-    training_set = process_text('Training.csv')
-
+def analyze_multi():
     cv = CountVectorizer()
     X_train_count = cv.fit_transform(X_train)
     X_test_count = cv.transform(X_test)
 
-    model = MultinomialNB()
-    model.fit(X_train_count,y_train)
-    prediction = model.predict(X_test_count)
-    accuracy = model.score(X_test_count,y_test)
+    model_nb = MultinomialNB()
+    model_nb.fit(X_train_count, y_train)
+    prediction_nb = model_nb.predict(X_test_count)
+    accuracy_nb = model_nb.score(X_test_count, y_test)
 
-    print('TEST DATA:', X_test)
-    print('PREDICTION:', prediction)
-    print('ACCURACY:', accuracy)
+    return prediction_nb, accuracy_nb
 
+
+
+def analyze_gauss():
+    cv = CountVectorizer()
+    X_train_count = cv.fit_transform(X_train)
+    X_test_count = cv.transform(X_test)
+
+    model_g = GaussianNB()
+    model_g.fit(X_train_count, y_train)
+    prediction_g = model_g.predict(X_test_count)
+    accuracy_g = model_g.score(X_test_count, y_test)
+
+    return prediction_g, accuracy_g
+
+
+
+def main():
+    process_text('Training.csv')
+
+    prediction_nb, accuracy_nb = analyze_multi()
+    prediction_g, accuracy_g = analyze_gauss()
+
+    print('Test data: ')
+    for item in X_test:
+        print (item)
+
+    print('MULTINOMIAL NAIVE BAYES')
+    print('\nPrediction:', prediction_nb)
+    print('\nAccuracy:', accuracy_nb)
+
+    print('\n\n\nGAUSSIAN NAIVE BAYES')
+    print('\nPrediction:', prediction_g)
+    print('\nAccuracy:', accuracy_g)
 
 
 if __name__=="__main__":
